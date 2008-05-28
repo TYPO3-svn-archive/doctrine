@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Relation_Parser.php'));
+
 /**
  * Custom table to register the custom relation parser.
  *
