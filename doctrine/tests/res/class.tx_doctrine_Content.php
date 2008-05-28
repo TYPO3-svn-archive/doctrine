@@ -21,38 +21,35 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
- 
 
 /**
- * Just a simple record fixture for Doctrine tests
+ * Just a simple content fixture for Doctrine tests
  *
  * @author	Christopher Hlubek <hlubek (at) networkteam.com>
  * @package	TYPO3
  * @subpackage	tx_doctrine
  */
-class Record extends Doctrine_Record {
+class tx_doctrine_Content extends tx_doctrine_Record {
 	public function setTableDefinition() {
-		$this->setTableName('tx_doctrine_test_record');
+		$this->setTableName('tx_doctrine_content');
         $this->hasColumn('name', 'string', 30);
         
-        /*
-        // use deleted field
-        $this->hasColumn('deleted', 'boolean', 1);
-		*/
+        // Record attributes
+        $this->hasColumn('text', 'string', 65535);
+        
+        $this->hasColumn('parent_id', 'integer');
+        $this->hasColumn('deleted', 'boolean', 1, array('default' => false));
     }
 
     public function setUp() {
-        $this->actAs('Timestampable');
-    }
-/*
-    public function preDelete($event) {
-        $event->skipOperation();
+        // $this->actAs('Timestampable');
+
+        $this->hasOne('tx_doctrine_Node as Parent',
+        	array('local' => 'parent_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
+
+        $this->index('parent_id', array('fields' => 'parent_id'));
     }
 
-    public function postDelete($event) {
-        $this->deleted = true;
-        $this->save();
-    }
-*/
+
 }
 ?>

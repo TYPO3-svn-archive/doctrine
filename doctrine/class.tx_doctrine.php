@@ -30,4 +30,9 @@ spl_autoload_register(array('Doctrine', 'autoload'));
 Doctrine_Manager::connection(
 	new PDO('mysql:host='.TYPO3_db_host.';dbname='.TYPO3_db, TYPO3_db_username, TYPO3_db_password, array( PDO::ATTR_PERSISTENT => true)));
 
+
+	// include tx_doctrine classes 	
+require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Record.php'));
+
+	
 ?>
