@@ -22,7 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
  
-require_once(t3lib_extMgm::extPath('doctrine', 'class.tx_doctrine.php'));
+require_once(t3lib_extMgm::extPath('doctrine', 'tx_doctrine.php'));
 require_once(t3lib_extMgm::extPath('doctrine', 'tests/res/class.tx_doctrine_Node.php'));
 require_once(t3lib_extMgm::extPath('doctrine', 'models/class.tx_doctrine_FeUser.php'));
 
