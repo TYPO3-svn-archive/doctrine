@@ -27,20 +27,25 @@ require_once(t3lib_extMgm::extPath('doctrine', 'lib/doctrine/Doctrine.php'));
 class tx_doctrine {
 	
 	public static function init() {
+		$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['doctrine']);
 		spl_autoload_register(array('Doctrine', 'autoload'));
 
 			// include custom tx_doctrine classes 	
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Record.php'));
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Table.php'));
 
-			// Get the connection parameters from TYPO3
-			// FIXME hardcoded to MySQL
+		$dsn = sprintf(
+			$configuration['dsn'],
+			TYPO3_db_host,
+			TYPO3_db
+		);
+
 		Doctrine_Manager::connection(
 			new PDO(
-				'mysql:host=' . TYPO3_db_host . ';dbname=' . TYPO3_db,
+				$dsn,
 				TYPO3_db_username,
 				TYPO3_db_password,
-				array( PDO::ATTR_PERSISTENT => true))
+				array(PDO::ATTR_PERSISTENT => true))
 			);
 	}
 	

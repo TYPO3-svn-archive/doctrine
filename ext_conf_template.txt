@@ -1,0 +1,2 @@
+  # cat=basic; type=string; label=PDO DSN:DSN used to open doctrine connection. See www.php.net/PDO. %1$s is replaced by TYPO3_db_host, %2$s is replaced by TYPO3_db.
+dsn = mysql:host=%1$s;dbname=%2$s

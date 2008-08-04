@@ -28,6 +28,9 @@
  * @subpackage tx_doctrine
  * @version $Id$
  */
+
+require_once(t3lib_extMgm::extPath('doctrine') . 'class.tx_doctrine.php');
+
 class tx_doctrine_TcaImport extends Doctrine_Import {
 
 	protected $tableData = array();
