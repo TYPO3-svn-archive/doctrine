@@ -66,8 +66,8 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		$this->definition = array();
 		$this->definition['tableName'] = $this->tableName;
 		$this->definition['className'] = $this->classPrefix . $this->tableName;
-		$this->definition['columns'] = $this->buildColumnDefinitions();
 		$this->definition['relations'] = $this->buildColumnRelations();
+		$this->definition['columns'] = $this->buildColumnDefinitions();
 
 		$builder = new Doctrine_Import_Builder();
 		$builder->setTargetPath($this->targetPath);
@@ -80,6 +80,9 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		$columns = array();
 
 		foreach ($this->tableData as $fieldName => $properties) {
+			if (isset($this->definition['relations'][$fieldName])) {
+				continue;
+			}
 			$properties = array_change_key_case($properties, CASE_LOWER);
 	
 			$declarations = $this->conn->dataDict->getPortableDeclaration($properties);
@@ -125,7 +128,7 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 				$relation['refClass'] = $this->classPrefix . $config['MM'];
 				$relation['local'] = 'uid_local';
 				$relation['foreign'] = 'uid_foreign';
-				$alias = Doctrine_Inflector::pluralize($fieldName);
+				$alias = $fieldName;
 			} else {
 				$relation['local'] = $fieldName;
 				$relation['foreign'] = 'uid';

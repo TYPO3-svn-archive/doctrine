@@ -26,7 +26,7 @@ require_once(t3lib_extMgm::extPath('doctrine', 'lib/doctrine/Doctrine.php'));
 
 class tx_doctrine {
 	
-	public static function init() {
+	public static function init($dsn = NULL, $username = NULL, $password = NULL) {
 		$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['doctrine']);
 		spl_autoload_register(array('Doctrine', 'autoload'));
 
@@ -34,8 +34,20 @@ class tx_doctrine {
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Record.php'));
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Table.php'));
 
+		if ($dsn === NULL) {
+			$dsn = $configuration['dsn'];
+		}
+		if (!strlen($dsn)) {
+			die('no DSN specified!');
+		}
+		if ($username === NULL) {
+			$username = TYPO3_db_username;
+		}
+		if ($password === NULL) {
+			$password = TYPO3_db_password;
+		}
 		$dsn = sprintf(
-			$configuration['dsn'],
+			$dsn,
 			TYPO3_db_host,
 			TYPO3_db
 		);
@@ -43,9 +55,9 @@ class tx_doctrine {
 		Doctrine_Manager::connection(
 			new PDO(
 				$dsn,
-				TYPO3_db_username,
-				TYPO3_db_password,
-				array(PDO::ATTR_PERSISTENT => true))
+				$username,
+				$password,
+				array(PDO::ATTR_PERSISTENT => TRUE))
 			);
 	}
 	
@@ -59,7 +71,4 @@ class tx_doctrine {
 		Doctrine::loadModel($className);
 	}
 }
-
-
-tx_doctrine::init();
 ?>
