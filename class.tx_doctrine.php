@@ -29,10 +29,12 @@ class tx_doctrine {
 	public static function init($dsn = NULL, $username = NULL, $password = NULL) {
 		$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['doctrine']);
 		spl_autoload_register(array('Doctrine', 'autoload'));
-
+		
 			// include custom tx_doctrine classes 	
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Record.php'));
 		require_once(t3lib_extMgm::extPath('doctrine', 'classes/class.tx_doctrine_Table.php'));
+		require_once(t3lib_extMgm::extPath('doctrine', 'Templates/T3_L18N.php'));
+		require_once(t3lib_extMgm::extPath('doctrine', 'Templates/T3_EnableFields.php'));
 
 		if ($dsn === NULL) {
 			$dsn = $configuration['dsn'];
@@ -59,6 +61,8 @@ class tx_doctrine {
 				$password,
 				array(PDO::ATTR_PERSISTENT => TRUE))
 			);
+
+		Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
 	}
 	
 	public static function loadModel($className, $extensionKey) {

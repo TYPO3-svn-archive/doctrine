@@ -56,7 +56,7 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		$this->classPrefix = $value;
 	}
 
-	public function generateModel($tableName) {
+	public function generateModel($tableName, $generateTableClass = FALSE) {
 		$this->tableName = $tableName;
 		t3lib_div::loadTCA($this->tableName);
 		
@@ -68,10 +68,11 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		$this->definition['className'] = $this->classPrefix . $this->tableName;
 		$this->definition['relations'] = $this->buildColumnRelations();
 		$this->definition['columns'] = $this->buildColumnDefinitions();
+		$this->definition['actAs'] = $this->buildBehaviorDefinitions();
 
 		$builder = new Doctrine_Import_Builder();
 		$builder->setTargetPath($this->targetPath);
-		$builder->generateTableClasses(TRUE);
+		$builder->generateTableClasses($generateTableClass);
 
 		$builder->buildRecord($this->definition);
 	}
@@ -139,6 +140,51 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		}
 		
 		return $relations;
+	}
+
+	protected function buildBehaviorDefinitions() {
+		$behaviors = array();
+		$behaviors = $this->addL18NBehavior($behaviors);
+		$behaviors = $this->addEnableFieldsBehavior($behaviors);
+
+		return $behaviors;
+	}
+	
+	protected function addL18NBehavior(array $behaviors) {
+		if (isset($this->tca['ctrl']['languageField'])) {
+			$behaviors['T3_L18N'] = array('name' => $this->tca['ctrl']['languageField']);
+		}
+		
+		return $behaviors;
+	}
+	
+	protected function addEnableFieldsBehavior(array $behaviors) {
+		$options = array();
+			// deleted
+		if (isset($this->tca['ctrl']['delete'])) {
+			$options['delete'] = $this->tca['ctrl']['delete'];
+		}
+			// disabled
+		if (isset($this->tca['ctrl']['enablecolumns']['disabled'])) {
+			$options['disabled'] = $this->tca['ctrl']['enablecolumns']['disabled'];
+		}
+			// starttime
+		if (isset($this->tca['ctrl']['enablecolumns']['starttime'])) {
+			$options['starttime'] = $this->tca['ctrl']['enablecolumns']['starttime'];
+		}
+			// endtime
+		if (isset($this->tca['ctrl']['enablecolumns']['endtime'])) {
+			$options['endtime'] = $this->tca['ctrl']['enablecolumns']['endtime'];
+		}
+			// fe_group
+		if (isset($this->tca['ctrl']['enablecolumns']['fe_group'])) {
+			$options['fe_group'] = $this->tca['ctrl']['enablecolumns']['fe_group'];
+		}
+		
+		if (!empty($options)) {
+			$behaviors['T3_EnableFields'] = $options;
+		}
+		return $behaviors;
 	}
 }
 ?>
