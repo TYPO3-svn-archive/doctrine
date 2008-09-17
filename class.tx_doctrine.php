@@ -71,6 +71,9 @@ class tx_doctrine {
 
 		require_once ($baseModelPath . '/Base' . $className . '.php');
 		require_once ($modelPath . '/' . $className . '.php');
+		if (file_exists($modelPath . '/' . $className . 'Table.php')) {
+			require_once ($modelPath . '/' . $className . 'Table.php');
+		}
 		
 		Doctrine::loadModel($className);
 	}
