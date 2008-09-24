@@ -144,21 +144,30 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 
 	protected function buildBehaviorDefinitions() {
 		$behaviors = array();
-		$behaviors = $this->addL18NBehavior($behaviors);
-		$behaviors = $this->addEnableFieldsBehavior($behaviors);
+		$this->addTimestampBehavior($behaviors);
+		$this->addL18NBehavior($behaviors);
+		$this->addEnableFieldsBehavior($behaviors);
 
 		return $behaviors;
 	}
-	
-	protected function addL18NBehavior(array $behaviors) {
+
+	protected function addTimestampBehavior(array &$behaviors) {
+		if (isset($this->tca['ctrl']['crdate'])) {
+			$behaviors['Timestampable']['created'] = array('name' => $this->tca['ctrl']['crdate'], 'type' => 'int');
+		}
+		if (isset($this->tca['ctrl']['tstamp'])) {
+			$behaviors['Timestampable']['updated'] = array('name' => $this->tca['ctrl']['tstamp'], 'type' => 'int');
+		}
+	}
+
+	protected function addL18NBehavior(array &$behaviors) {
 		if (isset($this->tca['ctrl']['languageField'])) {
 			$behaviors['T3_L18N'] = array('name' => $this->tca['ctrl']['languageField']);
 		}
 		
-		return $behaviors;
 	}
-	
-	protected function addEnableFieldsBehavior(array $behaviors) {
+
+	protected function addEnableFieldsBehavior(array &$behaviors) {
 		$options = array();
 			// deleted
 		if (isset($this->tca['ctrl']['delete'])) {
@@ -184,7 +193,6 @@ class tx_doctrine_TcaImport extends Doctrine_Import {
 		if (!empty($options)) {
 			$behaviors['T3_EnableFields'] = $options;
 		}
-		return $behaviors;
 	}
 }
 ?>
